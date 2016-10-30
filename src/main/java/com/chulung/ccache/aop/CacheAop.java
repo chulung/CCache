@@ -10,21 +10,28 @@ import com.chulung.ccache.Cache;
 import com.chulung.ccache.annotation.CCache;
 import com.chulung.ccache.builder.CacheBuilder;
 
+import java.lang.reflect.Method;
+
 @Aspect
 public class CacheAop {
 	private Cache cache = CacheBuilder.config(10).addLiveMillesCacheStrategy(30 * 60, true).generateCache();
 	
-	@Pointcut(value = "execution(@com.chulung.ccache.annotation.CCache (..))")
+	@Pointcut(value = "@annotation(com.chulung.ccache.annotation.CCache)")
 	public void pointcut() {
 
 	}
-
 	@Around("pointcut() ")
 	public Object around(ProceedingJoinPoint jp) throws Throwable {
-		CCache cCache = ((MethodSignature) jp.getSignature()).getMethod().getAnnotation(CCache.class);
+		Method method = ((MethodSignature) jp.getSignature()).getMethod();
+		CCache cCache = method.getAnnotation(CCache.class);
 		if (cCache.liveSeconds()<=0) {
 			throw new IllegalArgumentException("liveSeconds must > 0 !");
 		}
-		return jp.proceed();
+		Object value=cache.get(method);
+		if (value==null){
+			value=jp.proceed();
+			cache.put(method,value);
+		}
+		return value;
 	}
 }
