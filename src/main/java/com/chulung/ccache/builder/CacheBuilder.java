@@ -1,8 +1,5 @@
 package com.chulung.ccache.builder;
 
-import static com.chulung.common.util.Preconditions.checkArgument;
-import static com.chulung.common.util.Preconditions.checkNotNull;
-
 import com.chulung.ccache.Cache;
 import com.chulung.ccache.DefaultCache;
 import com.chulung.ccache.strategy.CacheStrategy;
@@ -19,13 +16,13 @@ public final class CacheBuilder {
 
 	public static CacheBuilder config(int maxCapacity) {
 		CacheBuilder cacheBuilder = new CacheBuilder();
-		checkArgument(maxCapacity > 0);
+		if(maxCapacity <= 0) throw new IllegalArgumentException("maxCapacity must >0");
 		cacheBuilder.cacheConfig = new CacheConfig(maxCapacity);
 		return cacheBuilder;
 	}
 
 	public CacheBuilder addLiveMillesCacheStrategy(long timeToLiveSeconds, boolean isRefreshAfterAccess) {
-		checkArgument(timeToLiveSeconds > 0);
+		if(timeToLiveSeconds <= 0) throw new IllegalArgumentException("timeToLiveSeconds must >0");
 		this.cacheStrategy = new LiveMillesCacheStrategy(cacheConfig, timeToLiveSeconds, isRefreshAfterAccess);
 		return this;
 	}
@@ -36,8 +33,8 @@ public final class CacheBuilder {
 	}
 
 	public Cache generateCache() {
-		checkNotNull(cacheConfig);
-		checkNotNull(cacheStrategy);
+		if(cacheConfig==null) throw new IllegalArgumentException("cacheConfig can't be null");
+		if(cacheStrategy==null) throw new IllegalArgumentException("cacheStrategy can't be null");
 		return new DefaultCache(cacheConfig, cacheStrategy);
 	}
 }

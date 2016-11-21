@@ -12,6 +12,9 @@ import com.chulung.ccache.builder.CacheBuilder;
 
 import java.lang.reflect.Method;
 
+/**
+ * 通过注解aop的方式提供方法级缓存
+ */
 @Aspect
 public class CacheAop {
 	private Cache cache = CacheBuilder.config(10).addLiveMillesCacheStrategy(30 * 60, true).generateCache();

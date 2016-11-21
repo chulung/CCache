@@ -4,10 +4,18 @@ import com.chulung.ccache.Cache;
 import com.chulung.ccache.Element;
 import com.chulung.ccache.builder.CacheConfig;
 import com.chulung.ccache.exception.CapacityOutOfBoundsException;
-import com.chulung.common.util.Preconditions;
 
+/**
+ * 指定存活时间策略
+ */
 public class LiveMillesCacheStrategy extends CacheStrategy {
+	/**
+	 * 存活时间 毫秒
+	 */
 	private long timeToLiveMilles;
+	/**
+	 * 在访问之后是否重置存活时间
+	 */
 	private boolean isRefreshAfterAccess;
 
 	public LiveMillesCacheStrategy(CacheConfig cacheConfig, long timeToLiveSeconds, boolean isRefreshAfterAccess) {
@@ -27,11 +35,6 @@ public class LiveMillesCacheStrategy extends CacheStrategy {
 	@Override
 	public boolean isExpired(Element element) {
 		return (element.getCreateMills() + this.timeToLiveMilles) < System.currentTimeMillis();
-	}
-
-	@Override
-	public void validateConfig() {
-		Preconditions.checkState(timeToLiveMilles <= 0, "timeToLiveMilles must > 0 !");
 	}
 
 	public boolean isRefreshAfterAccess() {
