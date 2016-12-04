@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
  */
 @Aspect
 public class CacheAop {
-	private Cache cache = CacheBuilder.config(10).addLiveMillesCacheStrategy(30 * 60, true).generateCache();
+	private Cache cache = CacheBuilder.config(1000).addLiveMillesCacheStrategy(30 * 60, true).generateCache();
 	
 	@Pointcut(value = "@annotation(com.chulung.ccache.annotation.CCache)")
 	public void pointcut() {
